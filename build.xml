@@ -1,4 +1,4 @@
-<project name="twitter-repl" default="datanucleusenhance">
+<project name="clj-guestbooks" default="datanucleusenhance">
   <!-- When you copy this template to your working directories, change the
        value of appengine.sdk accordingly.  You may also want to use Ant's
        property file feature, allowing each developer to have their own
@@ -12,8 +12,8 @@
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
   <path id="project.classpath">
-    <pathelement path="war/WEB-INF/classes" />
-    <fileset dir="war/WEB-INF/lib">
+    <pathelement path="${classes.dir}" />
+    <fileset dir="${lib.dir}">
       <include name="**/*.jar" />
     </fileset>
     <fileset dir="${sdk.dir}/lib">
@@ -21,10 +21,14 @@
     </fileset>
   </path>
 
-  <target name="copyjars"
+  <target name="clean">
+    <delete dir="${classes.dir}" />
+  </target>
+
+  <target name="copyjar" depends="clean"
       description="Copies the App Engine JARs to the WAR.">
     <copy
-        todir="war/WEB-INF/lib"
+        todir="${lib.dir}"
         flatten="true">
       <fileset dir="${sdk.dir}/lib/user">
         <include name="**/*.jar" />
@@ -32,7 +36,8 @@
     </copy>
   </target>
 
-  <target name="compile" depends="copyjars"
+  
+  <target name="compile" depends="copyjar"
       description="Compiles Java source and copies other source files to the WAR.">
     <mkdir dir="${classes.dir}" />
     <copy todir="${classes.dir}">
@@ -47,12 +52,16 @@
         debug="on" />
   </target>
   
-  <target name="clj-compile" depends="compile">
+   <target name="datanucleusenhance" depends="compile"
+      description="Performs JDO enhancement on compiled data classes.">
+    <enhance_war war="war" />
+  </target>
+
+   <target name="clj-compile" depends="datanucleusenhance">
     <java classname="clojure.lang.Compile" classpathref="project.classpath" failonerror="true">
       <classpath path="${src.dir}" />
       <sysproperty key="clojure.compile.path" value="${classes.dir}" />
       <arg value="clj.guestbook.servlet" />
-      <arg value="clj.start" />
       <arg value="appengine-clj.users" />
       <arg value="appengine-clj.datastore" />
       <arg value="appengine-clj.test-utils" />
@@ -66,12 +75,7 @@
     </java>
   </target>
 
-  <target name="datanucleusenhance" depends="clj-compile"
-      description="Performs JDO enhancement on compiled data classes.">
-    <enhance_war war="war" />
-  </target>
-
-  <target name="runserver" depends="datanucleusenhance"
+  <target name="runserver" depends="clj-compile"
       description="Starts the development server.">
     <dev_appserver war="war" />
   </target>
