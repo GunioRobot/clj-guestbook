@@ -9,18 +9,17 @@
   (GET "/clj/hello"
     (html [:h1 "Hola, petardo!"]))
 
-  (GET "/clj/user"
+  (GET "/clj/user/hello"
     (let [user-service (UserServiceFactory/getUserService)
           user (.getCurrentUser user-service)]
       (html [:h1 "Hello, " (if user (.getNickname user) "World") "!"])))
 
-  (GET "/clj/user/hello"
+  (GET "/clj/user/"
      ( let [user-service (UserServiceFactory/getUserService)
             user (.getCurrentUser user-service)]
       (html
-        [:h1 "Hello, " (if user (.getNickname user) "World") "!"]
-        [:p (link-to (.createLoginURL user-service "/clj/user") "sign in")]
-        [:p (link-to (.createLogoutURL user-service "/clj/user") "sign out")]))))
+        [:p (link-to (.createLoginURL user-service "/clj/user/hello") "sign in")]
+        [:p (link-to (.createLogoutURL user-service "/clj/hello") "sign out")]))))
 
 
 (defservice clj-guestbook)

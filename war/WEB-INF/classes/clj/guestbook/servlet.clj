@@ -3,7 +3,7 @@
   (:use [compojure.http servlet routes])
   (:use compojure.html)
   (:import
-    (com.google.appengine.api.users UserServiceFactory)))
+    (com.google.appengine.api.users UserServiceFactory User)))
 
 (defroutes clj-guestbook
   (GET "/clj/hello"
