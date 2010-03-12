@@ -62,6 +62,6 @@ to include your name with greetings you post.</p>
       <div><textarea name="content" rows="3" cols="60"></textarea></div>
       <div><input type="submit" value="Post Greeting" /></div>
     </form>
-
+    <a href="/clj">really do you want post with that mess of parenthesis?</a> 
   </body>
 </html>

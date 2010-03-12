@@ -3,12 +3,14 @@
 ; app engine services.
 
 (ns start
-  (:use clj.guestbook.servlet)
+  (:use (clj.guestbook servlet greetings))
   (:use compojure.server.jetty compojure.http compojure.control)
   (:import (org.mortbay.jetty.webapp WebAppContext)
-           (com.google.appengine.tools.development ApiProxyLocalFactory LocalServerEnvironment)
+           (com.google.appengine.tools.development ApiProxyLocalFactory
+                                                   LocalServerEnvironment)
            (com.google.apphosting.api ApiProxy ApiProxy$Environment)
-           (com.google.appengine.api.users dev.LocalLogoutServlet dev.LocalLoginServlet
+           (com.google.appengine.api.users dev.LocalLogoutServlet
+                                           dev.LocalLoginServlet
                                            UserServiceFactory)
            (guestbook Greeting GuestbookServlet SignGuestbookServlet)))
 
@@ -44,17 +46,17 @@
 (comment "This method is broken with gae sdk 1.3.1"
          (defn init-app-engine
            "Initialize the app engine services."
-           ([] (init-app-engine "/tmp"))
+           ([] (init-app-engine "C:/tmp"))
            ([dir] (ApiProxy/setDelegate
                    (proxy [ApiProxyLocalImpl] [(java.io.File. dir)])))))
 
 ; from a comment in http://blog.miau.biz/2010/01/interactive-clojure-on-appengine-pt2.html
 (defn init-app-engine
   "Initialize the app engine services."
-  ([] (init-app-engine "/tmp"))
+  ([] (init-app-engine "/"))
   ([dir] (let [proxy-factory (ApiProxyLocalFactory.)
                environment (proxy [LocalServerEnvironment] []
-                             (getAppDir [] (java.io.File dir)))
+                             (getAppDir [] (new java.io.File dir)))
                api-proxy (.create proxy-factory environment)]
            (ApiProxy/setDelegate api-proxy) api-proxy)))
 
@@ -77,10 +79,9 @@
                   "/_ah/logout" (new LocalLogoutServlet)
                   "/sign" (gae-servlet SignGuestbookServlet))
             urlDir (.toExternalForm (.toURL (new java.io.File webappDir)))]
-        (.setHandler serv (new WebAppContext  urlDir "/"))
+        (comment .setHandler serv (new WebAppContext  urlDir "/"))
         (start serv) serv)))
 
 (def server  (start-it "c:/Users/atreyu/dev/ws/clojure/clj-guestbook/war/"))
 (require 'compojure)
 (compojure/stop server)
-

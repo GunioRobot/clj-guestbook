@@ -8,7 +8,9 @@
   <property name="lib.dir" value="war/WEB-INF/lib" />
   <property name="src.dir" value="src" />
   <property name="test.dir" value="test" />
+  <property name="cljc.lib.dir" value="cljc-lib" />
   <property name="jar.file" value="appengine-clj.jar" />
+  
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
   <path id="project.classpath">
@@ -21,11 +23,18 @@
     </fileset>
   </path>
 
+  <path id="clj.compile.classpath">
+    <path refid="project.classpath" />
+    <fileset dir="${cljc.lib.dir}">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+
   <target name="clean">
     <delete dir="${classes.dir}" />
   </target>
 
-  <target name="copyjar" depends="clean"
+  <target name="copyjar" 
       description="Copies the App Engine JARs to the WAR.">
     <copy
         todir="${lib.dir}"
@@ -58,7 +67,7 @@
   </target>
 
    <target name="clj-compile" depends="datanucleusenhance">
-    <java classname="clojure.lang.Compile" classpathref="project.classpath" failonerror="true">
+    <java classname="clojure.lang.Compile" classpathref="clj.compile.classpath" failonerror="true">
       <classpath path="${src.dir}" />
       <sysproperty key="clojure.compile.path" value="${classes.dir}" />
       <arg value="clj.guestbook.servlet" />
