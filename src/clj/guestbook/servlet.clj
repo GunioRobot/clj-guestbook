@@ -11,7 +11,7 @@
 
 (defn sign-guestbook [params user]
   (greetings/create (params :content) user)
-   (redirect-to "/clj"))
+   (redirect-to "/clj/guestbook"))
 
 (defn show-guestbook [{:keys [user user-service]}]
   (let [all-greetings (greetings/find-all)]
@@ -66,7 +66,7 @@
   
   (POST "/clj/sign"
        (sign-guestbook params ((request :appengine-clj/user-info) :user)))
-  (GET "/clj"
+  (GET "/clj/guestbook"
        (show-guestbook (request :appengine-clj/user-info))))
   
 (defservice (users/wrap-with-user-info clj-guestbook))

@@ -94,7 +94,7 @@
     <appcfg action="update" war="war" />
   </target>
 
-  <target name="update_indexes" depends="datanucleusenhance"
+  <target name="update_indexes" depends="clj-compile"
       description="Uploads just the datastore index configuration to App Engine.">
     <appcfg action="update_indexes" war="war" />
   </target>
