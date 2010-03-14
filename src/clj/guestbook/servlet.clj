@@ -19,7 +19,7 @@
       [:body
         (if user
           [:p "Hello, " (.getNickname user) "! (You can "
-            (link-to (.createLogoutURL user-service "/clj") "sign out")
+            (link-to (.createLogoutURL user-service "/clj/guestbook") "sign out")
             ".)"]
           [:p "Hello! (You can "
             (link-to (.createLoginURL user-service "/clj") "sign in")
