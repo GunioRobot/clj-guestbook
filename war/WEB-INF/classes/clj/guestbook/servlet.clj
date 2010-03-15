@@ -19,10 +19,10 @@
       [:body
         (if user
           [:p "Hello, " (.getNickname user) "! (You can "
-            (link-to (.createLogoutURL user-service "/clj") "sign out")
+            (link-to (.createLogoutURL user-service "/clj/guestbook") "sign out")
             ".)"]
           [:p "Hello! (You can "
-            (link-to (.createLoginURL user-service "/clj") "sign in")
+            (link-to (.createLoginURL user-service "/clj/guestbook") "sign in")
             " to include your name with your greeting when you post.)"])
         (if (empty? all-greetings)
           [:p "The guestbook has no messages."]

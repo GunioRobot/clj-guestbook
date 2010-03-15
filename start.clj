@@ -4,6 +4,7 @@
 
 (ns start
   (:use (clj.guestbook servlet greetings))
+  (:use appengine-clj.users)
   (:use compojure.server.jetty compojure.http compojure.control)
   (:import (org.mortbay.jetty.webapp WebAppContext)
            (com.google.appengine.tools.development ApiProxyLocalFactory
@@ -11,6 +12,7 @@
            (com.google.apphosting.api ApiProxy ApiProxy$Environment)
            (com.google.appengine.api.users dev.LocalLogoutServlet
                                            dev.LocalLoginServlet
+                                           dev.LoginCookieUtils
                                            UserServiceFactory)
            (guestbook Greeting GuestbookServlet SignGuestbookServlet)))
 
@@ -25,23 +27,24 @@
 (defn login-aware-proxy
   "returns a proxy for the google apps environment that works locally"
   [request]
-  (let [email (or (:email (:session request)) "example@test.com")]
-     (proxy [ApiProxy$Environment] []
+  (let [email (or (:email (:session request))
+                  "jneira@test.com")]
+    (proxy [ApiProxy$Environment] []
       (isLoggedIn [] (boolean email))
       (getAuthDomain [] "")
       (getRequestNamespace [] "")
       (getDefaultNamespace [] "")
       (getAttributes [] (java.util.HashMap.))
-      (getEmail [] (or email ""))
+      (getEmail [] email)
       (isAdmin [] true)
       (getAppId [] "local"))))
 
 (defn environment-decorator
   "decorates the given application with a local version of the app engine environment"
   [application]
-    (fn [request]
-      (with-app-engine (login-aware-proxy request)
-      (application request))))
+   (fn [request]
+     (with-app-engine (login-aware-proxy request)
+       ((wrap-with-user-info application) request))))
 
 (comment "This method is broken with gae sdk 1.3.1"
          (defn init-app-engine
@@ -60,13 +63,12 @@
                api-proxy (.create proxy-factory environment)]
            (ApiProxy/setDelegate api-proxy) api-proxy)))
 
-(defmacro gae-servlet [svClass] 
-  `(proxy [~svClass] []
+(defmacro gae-servlet [svClass]
+ `(proxy [~svClass] []
     (doGet [req# resp#]
-           ((environment-decorator (fn [r#] (proxy-super doGet r# resp#))) req#))
+           (with-app-engine (login-aware-proxy nil) (proxy-super doGet req# resp#)))
     (doPost [req# resp#]
-           ((environment-decorator (fn [r#] (proxy-super doPost r# resp#))) req#))))
-
+            (with-app-engine (login-aware-proxy nil) (proxy-super doPost req# resp#)))))
 ;; make sure every thread has the environment set up
 
 (defn start-it  [webappDir]
@@ -79,7 +81,7 @@
                   "/_ah/logout" (new LocalLogoutServlet)
                   "/sign" (gae-servlet SignGuestbookServlet))
             urlDir (.toExternalForm (.toURL (new java.io.File webappDir)))]
-        (comment .setHandler serv (new WebAppContext  urlDir "/"))
+        (.setHandler serv (new WebAppContext  urlDir "/"))
         (start serv) serv)))
 
 (def server  (start-it "c:/Users/atreyu/dev/ws/clojure/clj-guestbook/war/"))

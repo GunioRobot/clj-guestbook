@@ -21,7 +21,7 @@
           [:p "Hello, " (.getNickname user) "! (You can "
             (link-to (.createLogoutURL user-service "/clj/guestbook") "sign out")
             ".)"]
-          [:p "Hello! (You can "
+          [:p "Hello! (You can " (str user-service)
             (link-to (.createLoginURL user-service "/clj/guestbook") "sign in")
             " to include your name with your greeting when you post.)"])
         (if (empty? all-greetings)
@@ -42,12 +42,11 @@
   
   (GET "/clj/user2"
     (let [user-info (request :appengine-clj/user-info)
-          user nil  c '(user-info :user)]
+          user (user-info :user)]
       (html
-       [:h1 (.getEmail  user-info)]
        [:h1 "Hello, " (if user (.getNickname user) "World") "!"]
-       (comment [:p (link-to (.createLoginURL (user-info :user-service) "/clj/user") "sign in")]
-                [:p (link-to (.createLogoutURL (user-info :user-service) "/clj/user") "sign out")]))))
+       [:p (link-to (.createLoginURL (user-info :user-service) "/clj/user") "sign in")]
+                [:p (link-to (.createLogoutURL (user-info :user-service) "/clj/user") "sign out")])))
   
   (GET "/clj/hello"
     (html [:h1 "Hola, desconocido!"]))
