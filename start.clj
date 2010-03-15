@@ -81,7 +81,7 @@
                   "/_ah/logout" (new LocalLogoutServlet)
                   "/sign" (gae-servlet SignGuestbookServlet))
             urlDir (.toExternalForm (.toURL (new java.io.File webappDir)))]
-        (.setHandler serv (new WebAppContext  urlDir "/"))
+        (comment .setHandler serv (new WebAppContext  urlDir "/"))
         (start serv) serv)))
 
 (def server  (start-it "c:/Users/atreyu/dev/ws/clojure/clj-guestbook/war/"))
