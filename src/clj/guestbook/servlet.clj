@@ -39,7 +39,7 @@
   ; Serve static resources
   ;(ANY "/*" (java.io.File. (path (params :*))))
   ;(ANY "/" (java.io.File. (path "index.html")))
-  
+
   (GET "/clj/user2"
     (let [user-info (request :appengine-clj/user-info)
           user (user-info :user)]
@@ -47,7 +47,7 @@
        [:h1 "Hello, " (if user (.getNickname user) "World") "!"]
        [:p (link-to (.createLoginURL (user-info :user-service) "/clj/user") "sign in")]
                 [:p (link-to (.createLogoutURL (user-info :user-service) "/clj/user") "sign out")])))
-  
+
   (GET "/clj/hello"
     (html [:h1 "Hola, desconocido!"]))
 
@@ -62,10 +62,10 @@
       (html
         [:p (link-to (.createLoginURL user-service "/clj/user/hello") "sign in")]
         [:p (link-to (.createLogoutURL user-service "/clj/hello") "sign out")])))
-  
+
   (POST "/clj/sign"
        (sign-guestbook params ((request :appengine-clj/user-info) :user)))
   (GET "/clj/guestbook"
        (show-guestbook (request :appengine-clj/user-info))))
-  
+
 (defservice (users/wrap-with-user-info clj-guestbook))

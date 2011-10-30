@@ -4,7 +4,7 @@ http://www.hackers-with-attitude.com/2009/08/intertactive-programming-with-cloju
 http://blog.miau.biz/2010/01/interactive-clojure-on-appengine-pt2.html
 http://github.com/zitterbewegung/blank-appengine-clj
 
-Runtime/java compile time dependencies: 
+Runtime/java compile time dependencies:
 WEB-INF/lib:
 war/WEB-INF/lib/appengine-api-1.0-sdk-1.3.1.jar'
 war/WEB-INF/lib/appengine-api-labs-1.3.1.jar'

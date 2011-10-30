@@ -10,7 +10,7 @@
   <property name="test.dir" value="test" />
   <property name="cljc.lib.dir" value="cljc-lib" />
   <property name="jar.file" value="appengine-clj.jar" />
-  
+
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
   <path id="project.classpath">
@@ -34,7 +34,7 @@
     <delete dir="${classes.dir}" />
   </target>
 
-  <target name="copyjar" 
+  <target name="copyjar"
       description="Copies the App Engine JARs to the WAR.">
     <copy
         todir="${lib.dir}"
@@ -45,7 +45,7 @@
     </copy>
   </target>
 
-  
+
   <target name="compile" depends="copyjar"
       description="Compiles Java source and copies other source files to the WAR.">
     <mkdir dir="${classes.dir}" />
@@ -60,7 +60,7 @@
         classpathref="project.classpath"
         debug="on" />
   </target>
-  
+
    <target name="datanucleusenhance" depends="compile"
       description="Performs JDO enhancement on compiled data classes.">
     <enhance_war war="war" />
@@ -76,7 +76,7 @@
       <arg value="appengine-clj.test-utils" />
     </java>
   </target>
-  
+
   <target name="repl">
     <java classname="clojure.main" classpathref="project.classpath" fork="true" failonerror="true">
       <classpath path="${src.dir}" />

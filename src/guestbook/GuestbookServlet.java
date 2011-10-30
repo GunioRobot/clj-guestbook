@@ -7,7 +7,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 public class GuestbookServlet extends HttpServlet {
-    
+
     UserService userService=null;
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
               throws IOException {
